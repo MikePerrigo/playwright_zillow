@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test';
+import { assert } from 'console';
 
 export class MortgageCalculator {
     readonly page: Page;
@@ -6,6 +7,7 @@ export class MortgageCalculator {
     readonly downPayment: Locator;
     readonly downPaymentPercent: Locator;
     readonly interestRate: Locator;
+    readonly homePriceError: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -27,5 +29,9 @@ export class MortgageCalculator {
         await this.downPayment.clear()
         await this.downPayment.fill(downPayment)
         await this.page.keyboard.press('Enter')
+    }
+
+    async evaluateError(error) {
+        await expect(this.page.locator('p', { hasText: error})).toBeVisible()
     }
 }

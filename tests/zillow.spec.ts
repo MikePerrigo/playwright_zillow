@@ -1,9 +1,15 @@
 import { test, expect } from '@playwright/test';
-import { MortgageCalculator } from '../pom'
+import { MortgageCalculator } from '../pom';
+import { tests } from '../testdata.json';
 
-test('has title', async ({ page }) => {
-  const mtgclc = new MortgageCalculator(page);
-  await mtgclc.goto();
-  await mtgclc.editHomePrice('450000')
-  await mtgclc.editDownPayment('80000')
-});
+tests.homeprice.forEach(({ title, value, error }) => {
+  test(`Testing ${title}`, async ({ page }) => {
+    const mtgclc = new MortgageCalculator(page);
+    await mtgclc.goto();
+    await mtgclc.editHomePrice(value)
+    await mtgclc.editDownPayment('80000')
+    if(error != "None"){
+      await mtgclc.evaluateError(error)
+    }
+  });
+})
